@@ -1,0 +1,39 @@
+
+[
+  {
+    "id": "CON001",
+    "customerId": "CUST001",
+    "name": "John Smith",
+    "email": "john.smith@maplehaven.ca",
+    "phone": "+1 416 555 1234",
+    "title": "Property Manager",
+    "status": "Active"
+  },
+  {
+    "id": "CON002",
+    "customerId": "CUST001",
+    "name": "Sarah Johnson",
+    "email": "sarah.johnson@maplehaven.ca",
+    "phone": "+1 416 555 2345",
+    "title": "Finance Manager",
+    "status": "Active"
+  },
+  {
+    "id": "CON003",
+    "customerId": "CUST002",
+    "name": "David Brown",
+    "email": "david@mapleridge.ca",
+    "phone": "+1 416 555 3456",
+    "title": "Account Manager",
+    "status": "Active"
+  },
+  {
+    "id": "CON004",
+    "customerId": "CUST003",
+    "name": "Robert Wilson",
+    "email": "robert@maplecreek.ca",
+    "phone": "+1 416 555 4567",
+    "title": "Administrator",
+    "status": "Inactive"
+  }
+]

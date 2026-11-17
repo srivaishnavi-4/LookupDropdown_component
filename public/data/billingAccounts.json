@@ -1,0 +1,53 @@
+
+[
+  {
+    "id": "BA-001",
+    "customerId": "CUST001",
+    "accountName": "Primary Billing Account",
+    "accountNumber": "BA-001",
+    "billingType": "Postpaid",
+    "status": "Active",
+    "creditLimit": 50000,
+    "createdAt": "2026-01-20"
+  },
+  {
+    "id": "BA-002",
+    "customerId": "CUST001",
+    "accountName": "Secondary Billing Account",
+    "accountNumber": "BA-002",
+    "billingType": "Prepaid",
+    "status": "Active",
+    "creditLimit": 25000,
+    "createdAt": "2026-02-15"
+  },
+  {
+    "id": "BA-003",
+    "customerId": "CUST001",
+    "accountName": "Corporate Billing Account",
+    "accountNumber": "BA-003",
+    "billingType": "Postpaid",
+    "status": "Inactive",
+    "creditLimit": 100000,
+    "createdAt": "2026-03-10"
+  },
+  {
+    "id": "BA-004",
+    "customerId": "CUST002",
+    "accountName": "Maple Ridge Primary Account",
+    "accountNumber": "BA-004",
+    "billingType": "Postpaid",
+    "status": "Active",
+    "creditLimit": 40000,
+    "createdAt": "2026-04-05"
+  },
+  {
+    "id": "BA-005",
+    "customerId": "CUST004",
+    "accountName": "Green Valley Billing",
+    "accountNumber": "BA-005",
+    "billingType": "Prepaid",
+    "status": "Active",
+    "creditLimit": 30000,
+    "createdAt": "2026-05-15"
+  }
+]
