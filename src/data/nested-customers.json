@@ -1,0 +1,98 @@
+
+{
+  "customers": [
+    {
+      "customer": {
+        "id": 201,
+        "personal": {
+          "name": "Vaishu",
+          "age": 23
+        },
+        "contact": {
+          "email": "vaishu@gmail.com",
+          "phone": "9876543210"
+        },
+        "address": {
+          "city": "Coimbatore",
+          "state": "Tamil Nadu"
+        },
+        "accounts": [
+          {
+            "accountId": "ACC201",
+            "accountName": "Business Account",
+            "status": "Active",
+            "balance": 50000
+          }
+        ],
+        "services": [
+          {
+            "serviceName": "Web Development",
+            "status": "Active"
+          }
+        ]
+      }
+    },
+    {
+      "customer": {
+        "id": 202,
+        "personal": {
+          "name": "Srini",
+          "age": 25
+        },
+        "contact": {
+          "email": "srini@gmail.com",
+          "phone": "9876543211"
+        },
+        "address": {
+          "city": "Chennai",
+          "state": "Tamil Nadu"
+        },
+        "accounts": [
+          {
+            "accountId": "ACC202",
+            "accountName": "Premium Account",
+            "status": "Active",
+            "balance": 80000
+          }
+        ],
+        "services": [
+          {
+            "serviceName": "Mobile Development",
+            "status": "Active"
+          }
+        ]
+      }
+    },
+    {
+      "customer": {
+        "id": 203,
+        "personal": {
+          "name": "Jo",
+          "age": 24
+        },
+        "contact": {
+          "email": "jo@gmail.com",
+          "phone": "9876543212"
+        },
+        "address": {
+          "city": "Madurai",
+          "state": "Tamil Nadu"
+        },
+        "accounts": [
+          {
+            "accountId": "ACC203",
+            "accountName": "Basic Account",
+            "status": "Pending",
+            "balance": 15000
+          }
+        ],
+        "services": [
+          {
+            "serviceName": "UI Development",
+            "status": "Pending"
+          }
+        ]
+      }
+    }
+  ]
+}

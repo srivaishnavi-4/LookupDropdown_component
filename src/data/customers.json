@@ -1,0 +1,111 @@
+
+{
+  "customers": [
+    {
+      "customer": {
+        "id": 101,
+        "personal": {
+          "name": "Vaishu",
+          "age": 23
+        },
+        "contact": {
+          "email": "vaishu@gmail.com",
+          "phone": "9876543210"
+        },
+        "address": {
+          "city": "Coimbatore",
+          "state": "Tamil Nadu",
+          "country": "India"
+        },
+        "accounts": [
+          {
+            "accountId": "ACC101",
+            "accountName": "Business Account",
+            "status": "Active",
+            "balance": 50000
+          },
+          {
+            "accountId": "ACC102",
+            "accountName": "Savings Account",
+            "status": "Inactive",
+            "balance": 25000
+          }
+        ],
+        "services": [
+          {
+            "serviceName": "Web Development",
+            "status": "Active"
+          },
+          {
+            "serviceName": "Cloud Hosting",
+            "status": "Pending"
+          }
+        ]
+      }
+    },
+    {
+      "customer": {
+        "id": 102,
+        "personal": {
+          "name": "Arun",
+          "age": 25
+        },
+        "contact": {
+          "email": "arun@gmail.com",
+          "phone": "9876543211"
+        },
+        "address": {
+          "city": "Chennai",
+          "state": "Tamil Nadu",
+          "country": "India"
+        },
+        "accounts": [
+          {
+            "accountId": "ACC103",
+            "accountName": "Premium Account",
+            "status": "Active",
+            "balance": 80000
+          }
+        ],
+        "services": [
+          {
+            "serviceName": "Mobile Development",
+            "status": "Active"
+          }
+        ]
+      }
+    },
+    {
+      "customer": {
+        "id": 103,
+        "personal": {
+          "name": "Priya",
+          "age": 24
+        },
+        "contact": {
+          "email": "priya@gmail.com",
+          "phone": "9876543212"
+        },
+        "address": {
+          "city": "Madurai",
+          "state": "Tamil Nadu",
+          "country": "India"
+        },
+        "accounts": [
+          {
+            "accountId": "ACC104",
+            "accountName": "Basic Account",
+            "status": "Pending",
+            "balance": 15000
+          }
+        ],
+        "services": [
+          {
+            "serviceName": "UI Development",
+            "status": "Pending"
+          }
+        ]
+      }
+    }
+  ]
+}

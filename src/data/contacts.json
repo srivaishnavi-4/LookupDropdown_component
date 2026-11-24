@@ -1,5 +1,6 @@
 
-[
+{
+  "contacts":[
   {
     "id": "CON001",
     "customerId": "CUST001",
@@ -37,3 +38,4 @@
     "status": "Inactive"
   }
 ]
+}

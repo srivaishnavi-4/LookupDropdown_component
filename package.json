@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource-variable/open-sans": "^5.3.0",
     "halleyx-ui-framework": "^11.16.47",
     "vue": "^3.5.42"
   },

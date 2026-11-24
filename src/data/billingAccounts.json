@@ -1,5 +1,4 @@
-
-[
+{"billingAccounts":[
   {
     "id": "BA-001",
     "customerId": "CUST001",
@@ -51,3 +50,4 @@
     "createdAt": "2026-05-15"
   }
 ]
+}
