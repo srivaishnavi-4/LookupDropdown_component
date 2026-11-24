@@ -3,7 +3,7 @@
   <div class="page">
 
     <section class="component-section">
-      <h3>1. Lookup: single secondary field, sorting, Load More and validation</h3>
+      <h3>1. Lookup: single secondary field, sorting, validation</h3>
 
       <HlxSelect
         ref="customerLookup"
@@ -13,20 +13,19 @@
         :options="customers"
         value-key="id"
         display-key="name"
-        secondary-key="email"
-        :search-keys="['name', 'email', 'city']"
+        :secondary-key="['email', 'city', 'status']"
+        :search-keys="[]"
         sort-key="name"
         sort-direction="asc"
-        :show-search-icon="true"
-        :show-option-icon="true"
+        field-icon="search"
+        :option-icon="building"
+        :status-options="statusOptions"
+        status-key="status"
         :required="true"
         :page-size="lookupPageSize"
-        :has-more="lookupHasMore"
-        :loading-more="lookupLoadingMore"
         :show-card="true"
         :card-fields="customerCardFields"
         :card-columns="3"
-        @load-more="loadMoreCustomers"
         @select="log('Lookup selected', $event)"
       />
 
@@ -34,7 +33,7 @@
     </section>
 
     <section class="component-section">
-      <h3>2. Lookup: multiple secondary fields and extra option fields</h3>
+      <h3>2. Lookup: multiple secondary fields and custom validation</h3>
 
       <HlxSelect
         v-model="multipleSecondaryId"
@@ -43,18 +42,22 @@
         :options="customers"
         value-key="id"
         display-key="name"
-        :secondary-key="['email', 'status']"
-        :search-keys="['name', 'email', 'city', 'status']"
-        :show-option-icon="true"
+        :secondary-key="['email', 'status', 'id']"
+        :search-keys="['id', 'name']"
+        option-icon="user"
+        :status-options="statusOptions"
+        status-key="status"
         :show-card="true"
         :card-fields="customerCardFields"
         :card-columns="2"
-        @select="log('Multiple secondary lookup selected', $event)"
-      />
+        :custom-error="customError"
+        required
+        @select="handleSelect"
+              />
     </section>
 
     <section class="component-section">
-      <h3>3. Lookup: externally fetched options</h3>
+      <h3>3. Remote Customer Lookup</h3>
 
       <HlxSelect
         v-model="remoteLookupId"
@@ -70,6 +73,8 @@
         :show-card="true"
         :card-fields="customerCardFields"
         :card-columns="2"
+        :status-options="statusOptions"
+        status-key="status"
         @search="searchRemoteLookup"
         @select="log('Remote lookup selected', $event)"
       />
@@ -87,10 +92,12 @@
         value-key="id"
         display-key="name"
         secondary-key="email"
-        :search-keys="['name', 'email', 'city']"
+        :search-keys="['name']"
         :show-card="true"
         :card-fields="customerCardFields"
         :card-columns="2"
+        :status-options="statusOptions"
+        status-key="status"
         @select="log('Local searchable dropdown selected', $event)"
       />
     </section>
@@ -110,6 +117,8 @@
         :show-card="true"
         :card-fields="customerCardFields"
         :card-columns="1"
+        :status-options="statusOptions"
+        status-key="status"
         @select="log('Normal dropdown selected', $event)"
       />
     </section>
@@ -131,8 +140,8 @@
         :show-card="true"
         :card-fields="customerCardFields"
         :card-columns="2"
-        @search="searchRemoteDropdown"
-        @select="log('Remote dropdown selected', $event)"
+        :status-options="statusOptions"
+        status-key="status"
       />
     </section>
 
@@ -158,6 +167,8 @@
         :show-card="true"
         :card-fields="nestedCustomerCardFields"
         :card-columns="2"
+        :status-options="statusOptions"
+        status-key="customer.status"
         @select="log('Nested customer selected', $event)"
       />
     </section>
@@ -184,6 +195,8 @@
         :show-card="true"
         :card-fields="nestedAccountCardFields"
         :card-columns="1"
+        :status-options="statusOptions"
+        status-key="customer.accounts.0.status"
         @select="log('Nested account selected', $event)"
       />
     </section>
@@ -267,15 +280,15 @@
           {
             parentValue: selectedOrganizationId,
             parentKey: 'organizationId',
-            operator:'equals'
+            operator: 'equals'
           },
           {
             parentValue: selectedDepartmentId,
             parentKey: 'departmentId',
-            operator:'not equals'
+            operator: 'equals'
           }
         ]"
-        dependency-operator="OR"
+        dependency-operator="AND"
         @select="resetEmployeeChildren"
       />
 
@@ -402,6 +415,8 @@
         :card-columns="2"
         :card-loading="cardDemoLoading"
         :card-error="cardDemoError"
+        :status-options="statusOptions"
+        status-key="status"
         retry-text="Retry loading"
         @select="loadCardDetails"
         @retry="retryCardDetails"
@@ -415,7 +430,7 @@
         v-model="selectedCustomerId"
         selection-type="dropdown"
         :options="customersd"
-        :show-option-icon="true"
+        option-icon="user"
         :show-card="true"
         :card-fields="cardfields"
         :card-columns="1"
@@ -423,6 +438,7 @@
         display-key="name"
         secondary-fallback="Not available"
         :secondary-key="['id', 'city']"
+        :search-enabled="false"
       />
 
       <p>Selected ID: {{ selectedCustomerId }}</p>
@@ -456,7 +472,6 @@
       <p>Selected Course ID: {{ selectedCourseId }}</p>
     </section>
 
-    <!-- SECTION 16 -->
     <section class="component-section">
       <h3>16. Lookup: stale and unavailable selected record testing</h3>
 
@@ -474,6 +489,8 @@
         :show-card="true"
         :card-fields="customerCardFields"
         :card-columns="2"
+        :status-options="statusOptions"
+        status-key="status"
         clearable
         @select="log('Stale test selected', $event)"
         @clear="log('Stale test cleared', null)"
@@ -529,6 +546,7 @@
         {{ staleTestMessage }}
       </p>
     </section>
+
     <section class="component-section">
   <h3>17. API-based User Lookup with Dynamic Record Creation</h3>
 
@@ -542,8 +560,9 @@
     display-key="name"
     value-key="_id"
     :options="[]"
-    :search-keys="['name', 'email', 'role']"
+    :search-keys="['name']"
     :show-card="true"
+
     :card-fields="[
       { key: 'name', label: 'Name' },
       { key: 'email', label: 'Email' },
@@ -551,6 +570,12 @@
       { key: 'isActive', label: 'Active' },
       { key: 'addedDate', label: 'Added Date' }
     ]"
+
+    :create-enabled="true"
+    create-api-url="http://localhost:5000/api/users"
+    create-response-key="data"
+    :create-fields="createUserFields"
+    @created="handleUserCreated"
   />
 </section>
 
@@ -560,6 +585,8 @@
 <script>
 import HlxSelect from "./components/hlxselect.vue";
 import nestedCustomerData from "./data/nested-customers.json";
+import userIcon from "./assets/user.svg";
+import buildingIcon from "./assets/buildings_icon.svg";
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -572,7 +599,72 @@ export default {
 
   data() {
     return {
-      // Existing demo selections
+     
+    selectedUserId: null,
+
+    createUserFields: [
+      {
+        key: "name",
+        label: "Name",
+        type: "text",
+        required: true,
+        placeholder: "Enter user name"
+      },
+      {
+        key: "email",
+        label: "Email",
+        type: "email",
+        required: true,
+        placeholder: "Enter email address"
+      },
+      {
+        key: "role",
+        label: "Role",
+        type: "select",
+        required: true,
+        placeholder: "Select role",
+        options: [
+          {
+            label: "Admin",
+            value: "admin"
+          },
+          {
+            label: "student",
+            value: "student"
+          },
+          {
+            label: "instructor",
+            value: "instructor"
+          }
+        ]
+      },
+      {
+        key: "isActive",
+        label: "Active Status",
+        type: "select",
+        required: false,
+        placeholder: "Select status",
+        options: [
+          {
+            label: "Active",
+            value: true
+          },
+          {
+            label: "Inactive",
+            value: false
+          }
+        ]
+      },
+      {
+        key: "addedDate",
+        label: "Added Date",
+        type: "date",
+        required: false
+      }
+    ],
+      user: userIcon,
+      building: buildingIcon,
+
       lookupCustomerId: null,
       multipleSecondaryId: null,
       remoteLookupId: null,
@@ -600,12 +692,12 @@ export default {
       selectedProjectId: null,
       andEmployeeId: null,
       nestedAndEmployeeId: null,
-
+      selectedUserId: null,
       selectedCourseId: null,
       selectedCustomerId: null,
 
-      // Section 16: stale selection test
       staleSelectionCustomerId: 101,
+      customError: "Enter a valid data",
 
       staleTestCustomers: [
         {
@@ -639,7 +731,37 @@ export default {
 
       staleTestMessage: "Initial selection loaded",
 
-      // Course card fields
+      statusOptions: [
+        {
+          name: "Active",
+          value: "Active",
+          color: "#16A34A",
+          backgroundColor: "#DCFCE7",
+          textColor: "#166534"
+        },
+        {
+          name: "Inactive",
+          value: "Inactive",
+          color: "#DC2626",
+          backgroundColor: "#FEE2E2",
+          textColor: "#991B1B"
+        },
+        {
+          name: "Pending",
+          value: "Pending",
+          color: "#D97706",
+          backgroundColor: "#FEF3C7",
+          textColor: "#92400E"
+        },
+        {
+          name: "Draft",
+          value: "Draft",
+          color: "#2563EB",
+          backgroundColor: "#DBEAFE",
+          textColor: "#1E40AF"
+        }
+      ],
+
       courseCardFields: [
         { key: "title", label: "Course Title" },
         { key: "category", label: "Category" },
@@ -661,9 +783,9 @@ export default {
           city: "Chennai"
         },
         {
-          id:103,
-          name:"Vaishu",
-          city:"Coimbatore"
+          id: 103,
+          name: "Vaishu",
+          city: "Coimbatore"
         },
         {
           id: 103,
@@ -757,7 +879,6 @@ export default {
         }
       ],
 
-      // Simulated remote API records
       remoteApiCustomers: [
         {
           id: 501,
@@ -952,6 +1073,11 @@ export default {
   },
 
   methods: {
+
+    handleUserCreated(user) {
+    console.log("New user created:", user);
+  },
+
     log(label, record) {
       console.log(label, record);
     },
@@ -963,7 +1089,6 @@ export default {
         );
 
         console.log("========== SUBMITTED CUSTOMER DETAILS ==========");
-
         console.log("Customer ID:", submittedCustomer?.id);
         console.log("Full Customer Object:", submittedCustomer);
 
@@ -972,7 +1097,6 @@ export default {
         }
 
         console.log("=================================================");
-
         this.$refs.customerLookup.reset();
       }
     },
@@ -984,7 +1108,6 @@ export default {
 
       try {
         await delay(500);
-
         this.lookupPageSize = Math.min(
           this.lookupPageSize + 4,
           this.customers.length
@@ -993,13 +1116,14 @@ export default {
         this.lookupLoadingMore = false;
       }
     },
-
+    handleSelect(record){
+      this.customError="";
+    },
     async searchRemoteLookup(searchText) {
       this.remoteLookupLoading = true;
 
       try {
         await delay(350);
-
         const query = String(searchText || "").trim().toLowerCase();
 
         this.remoteLookupOptions = this.remoteApiCustomers.filter(record =>
@@ -1018,7 +1142,6 @@ export default {
 
       try {
         await delay(350);
-
         const query = String(searchText || "").trim().toLowerCase();
 
         this.remoteDropdownOptions = this.remoteApiCustomers.filter(record =>
@@ -1088,7 +1211,6 @@ export default {
       }
     },
 
-    // Section 16: stale selection test methods
     removeStaleSelectedRecord() {
       if (this.staleSelectionCustomerId === null) {
         this.staleTestMessage = "No selected record to remove";
