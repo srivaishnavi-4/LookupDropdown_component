@@ -68,7 +68,7 @@
       />
 
       <!-- Clear Icon -->
-      <img
+            <img
         v-if="
           selectedRecord &&
           clearable &&
@@ -77,7 +77,7 @@
           !(selectionType === 'dropdown' && !searchEnabled)
         "
         :src="closeIcon"
-        class="action-icon"
+        class="action-icon clear-icon"
         alt="Clear"
         @click.stop="clearSelection"
       />
@@ -100,18 +100,20 @@
     </div>
 
     <!-- Options -->
-    <div
-      v-if="
-        isOpen &&
-        (
-          selectionType === 'dropdown' ||
-          searchText.trim().length > 0 ||
-          isLoading ||
-          apiError
-        )
-      "
-      class="options-container"
-    >
+   <div
+  v-if="
+    isOpen &&
+    (
+      selectionType === 'dropdown' ||
+      searchText.trim().length > 0 ||
+      isLoading ||
+      apiError
+    )
+  "
+  class="options-container"
+  :class="{ 'options-above': isOpenAbove }"
+  :style="{ maxHeight: `${dropdownMaxHeight}px` }"
+>
 
       <!-- Loading -->
       <div v-if="isLoading" class="options-loading-state">
@@ -209,7 +211,7 @@
     Add New Record
   </button>
 </div>
-
+    
       <!-- Option List -->
       <template v-else>
 
@@ -254,7 +256,7 @@
               class="option-subtitle"
             >
               <span
-                v-for="key in visibleSecondaryFields(record)"
+                v-for="(key, fieldIndex) in visibleSecondaryFields(record)"
                 :key="key"
                 class="secondary-item"
               >
@@ -304,8 +306,8 @@
                     fieldIndex <
                     visibleSecondaryFields(record).length - 1
                   "
-                  width="4"
-                  height="4"
+                  width="2"
+                  height="2"
                   viewBox="0 0 2 2"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -403,17 +405,39 @@
           @click="$emit('retry', selectedRecord)"
         >
           <svg
-            width="16"
-            height="16"
-            viewBox="0 0 13 13"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12.9573 7.22054C12.8087 8.56036 12.2469 9.82075 11.3498 10.8269C10.4527 11.8331 9.26477 12.5353 7.95071 12.836C6.63665 13.1368 5.26157 13.0212 4.01613 12.5054C2.77068 11.9896 1.71659 11.099 1 9.95721V11.8332C1 11.9658 0.947322 12.093 0.853553 12.1868C0.759785 12.2805 0.632608 12.3332 0.5 12.3332C0.367392 12.3332 0.240215 12.2805 0.146447 12.1868C0.0526784 12.093 0 11.9658 0 11.8332V8.49988C0 8.36727 0.0526784 8.24009 0.146447 8.14632C0.240215 8.05256 0.367392 7.99988 0.5 7.99988H3.83333C3.96594 7.99988 4.09312 8.05256 4.18689 8.14632C4.28065 8.24009 4.33333 8.36727 4.33333 8.49988C4.33333 8.63249 4.28065 8.75966 4.18689 8.85343C4.09312 8.9472 3.96594 8.99988 3.83333 8.99988H1.61333C2.14851 10.0546 3.01001 10.9084 4.06959 11.434C5.12917 11.9596 6.33016 12.1289 7.49375 11.9168C8.65735 11.7047 9.72134 11.1224 10.5273 10.2568C11.3333 9.39112 11.8381 8.28831 11.9667 7.11254C11.9727 7.04643 11.9918 6.98217 12.023 6.92353C12.0541 6.86489 12.0966 6.81303 12.1479 6.77099C12.1993 6.72894 12.2586 6.69755 12.3222 6.67864C12.3858 6.65973 12.4526 6.65369 12.5186 6.66086C12.5846 6.66803 12.6485 6.68827 12.7066 6.72041C12.7647 6.75254 12.8158 6.79593 12.857 6.84803C12.8981 6.90012 12.9285 6.9599 12.9463 7.02385C12.9641 7.08781 12.969 7.15468 12.9607 7.22054H12.9573ZM12.5 0.666544C12.3674 0.666544 12.2402 0.719222 12.1464 0.81299C12.0527 0.906758 12 1.03394 12 1.16654V3.04254C11.2834 1.90074 10.2293 1.01019 8.98387 0.494354C7.73843 -0.0214799 6.36335 -0.137033 5.04929 0.163715C3.73523 0.464464 2.54729 1.16661 1.6502 2.17281C0.753099 3.179 0.191291 4.43939 0.0426666 5.77921C0.0355407 5.84453 0.0413582 5.91061 0.0597865 5.97367C0.0782147 6.03674 0.108892 6.09556 0.150066 6.14676C0.191239 6.19796 0.2421 6.24055 0.299742 6.27209C0.357384 6.30362 0.420676 6.32348 0.486 6.33054C0.504208 6.33156 0.522459 0.33156 0.540667 0.33054C0.66374 0.33028 0.782391 0.28463 0.873908 0.20234C0.965424 0.12005 1.02338 0.0069 1.03667 0.88454C1.16674 0.71007 1.67228 0.60831 2.47816 0.74471C3.28404 0.88051 4.3473 0.29938 5.50978 0.08769C6.67213 0.875999 7.87213 1.04505 8.93091 1.56971H9.16667C9.03406 3.99988 8.66667 3.99988 8.66667 4.49988C8.66667 4.63248 8.90688 4.05256 8.81311 4.14632C8.71935 4.24009 12.8536 0.81299 12.8536 0.81299L13 4.49988V1.16654C13 1.03394 12.9473 0.906758 12.8536 0.81299C12.7598 0.719222 12.6326 0.666544 12.5 0.666544Z"
-              fill="#54BD95"
-            />
-          </svg>
+  width="17"
+  height="17"
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M20 7V3M20 7H16"
+    stroke="#4FBD9B"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M20 7C18.5 4.5 15.8 3 12.8 3C8 3 4 7 4 12"
+    stroke="#4FBD9B"
+    stroke-width="2"
+    stroke-linecap="round"
+  />
+  <path
+    d="M4 17V21M4 17H8"
+    stroke="#4FBD9B"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M4 17C5.5 19.5 8.2 21 11.2 21C16 21 20 17 20 12"
+    stroke="#4FBD9B"
+    stroke-width="2"
+    stroke-linecap="round"
+  />
+</svg>
 
           <span>{{ retryText }}</span>
         </button>
@@ -996,9 +1020,10 @@ createResponseKey: {
       closeIcon,
       userIcon,
 
-      isOpen: false,
+isOpenAbove: false,
+dropdownMaxHeight: 220,
       isFocused: false,
-
+      isOpenAbove:false,
       searchText: "",
 
       selectedRecord: null,
@@ -1445,24 +1470,44 @@ createFocusedField: ""
   },
 
   mounted() {
-    document.addEventListener(
-      "pointerdown",
-      this.handleOutsideClick
-    );
-  },
+  document.addEventListener(
+    "pointerdown",
+    this.handleOutsideClick
+  );
+
+  window.addEventListener(
+    "scroll",
+    this.updateDropdownPosition,
+    true
+  );
+
+  window.addEventListener(
+    "resize",
+    this.updateDropdownPosition
+  );
+},
 
   beforeUnmount() {
+  document.removeEventListener(
+    "pointerdown",
+    this.handleOutsideClick
+  );
 
-    document.removeEventListener(
-      "pointerdown",
-      this.handleOutsideClick
-    );
+  window.removeEventListener(
+    "scroll",
+    this.updateDropdownPosition,
+    true
+  );
 
-    if (this.blurTimer) {
-      clearTimeout(this.blurTimer);
-    }
+  window.removeEventListener(
+    "resize",
+    this.updateDropdownPosition
+  );
 
-  },
+  if (this.blurTimer) {
+    clearTimeout(this.blurTimer);
+  }
+},
 
   methods: {
     // Resolve Icon Name to SVG
@@ -1492,6 +1537,25 @@ createFocusedField: ""
 
     return current[key];
   }, data);
+},
+
+updateDropdownPosition() {
+  if (!this.isOpen) return;
+
+  const input = this.$el.querySelector(".selection-field");
+  const options = this.$el.querySelector(".options-container");
+
+  if (!input || !options) return;
+
+  const inputRect = input.getBoundingClientRect();
+
+  const spaceBelow = window.innerHeight - inputRect.bottom;
+  const spaceAbove = inputRect.top;
+
+  const optionsHeight = Math.min(options.scrollHeight, 220);
+
+  this.isOpenAbove =
+    spaceBelow < optionsHeight && spaceAbove > spaceBelow;
 },
 
 
@@ -1608,18 +1672,20 @@ createFocusedField: ""
     },
 
     openList() {
-      if (this.isDisabled || this.readonly) {
-        return;
-      }
+  if (this.isDisabled || this.readonly) {
+    return;
+  }
 
-      this.isOpen = true;
-      this.isFocused = true;
-      this.highlightedIndex = -1;
+  this.isOpen = true;
+  this.isFocused = true;
+  this.highlightedIndex = -1;
 
-      this.$nextTick(() => {
-        this.$refs.searchInput?.focus();
-      });
-    },
+  this.updateDropdownPosition();
+
+  this.$nextTick(() => {
+    this.$refs.searchInput?.focus();
+  });
+},
 
     // Dropdown Arrow
     toggleList() {
@@ -2044,6 +2110,21 @@ getStatusStyle(value) {
       this.scrollHighlightedIntoView();
 
     },
+    updateDropdownPosition() {
+  this.$nextTick(() => {
+    const input = this.$el.querySelector(".selection-field");
+
+    if (!input) return;
+
+    const rect = input.getBoundingClientRect();
+
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    this.isOpenAbove =
+      spaceBelow < 220 && spaceAbove > spaceBelow;
+  });
+},
 
     moveUp() {
 
@@ -2829,10 +2910,9 @@ async submitCreateForm() {
   transition: border-color 0.2s;
 }
 
-.selection-field:hover {
+.selection-field:not(.field-error):hover {
   border-color: #54bd95;
 }
-
 .selection-field.focused {
   border-color: #54bd95;
 }
@@ -2879,16 +2959,16 @@ async submitCreateForm() {
   color: #dc3545;
 }
 
-/* Disabled */
+/* Disabled 
 .selection-field.disabled .floating-label.floated {
   color: #d8d8d8;
-}
+}*/
 .selection-field.disabled:hover {
   color: #d8d8d8;
 }
 
 /* Hover effect only for normal, enabled inputs */
-.selection-field:not(.readonly):not(.disabled):hover {
+.selection-field:not(.field-error):not(.readonly):not(.disabled):hover {
   border-color: #54bd95;
 }
 
@@ -2930,8 +3010,8 @@ async submitCreateForm() {
   color:#A6A6A6;
 }
 .action-icon {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   cursor: pointer;
   flex-shrink: 0;
   color:rgb(86,85,83);
@@ -2956,6 +3036,13 @@ async submitCreateForm() {
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
   box-shadow: 0px 8px 25px -4px rgba(0, 0, 0, 0.4);
+}
+
+/* Open options above the input */
+.options-container.options-above {
+  top: auto;
+  bottom: 45px;
+  border-radius: 6px;
 }
 /* Option */
 .option-item {
@@ -2990,8 +3077,9 @@ async submitCreateForm() {
 }
 
 .option-icon {
-  width: 17px;
-  height: 17px;
+  width: 30px;
+  height: 30px;
+  align-items: center;
   object-fit: contain;
   flex-shrink: 0;
 }
@@ -3035,13 +3123,12 @@ async submitCreateForm() {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
   font-weight: 400;
 }
 
 .status-dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   display: inline-block;
   border-radius: 50%;
   background: var(--status-dot-color, #999999);
@@ -3088,7 +3175,7 @@ async submitCreateForm() {
 .card-body {
   display: grid;
   gap: 20px;
-  padding: 20px;
+  padding: 16px;
 }
 
 .detail-item {
@@ -3310,7 +3397,6 @@ async submitCreateForm() {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
   padding: 6px 10px;
   border: none;
   background: transparent;
@@ -3328,7 +3414,7 @@ async submitCreateForm() {
 .status-dot {
   width: 8px;
   height: 8px;
-  min-width: 8px;
+  min-width: 6px;
   border-radius: 50%;
   display: inline-block;
 }
@@ -3513,6 +3599,17 @@ async submitCreateForm() {
 .create-cancel-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.clear-icon {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+}
+
+.selection-field:hover .clear-icon {
+  opacity: 1;
+  visibility: visible;
 }
 /* Responsive */
 

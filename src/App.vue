@@ -57,28 +57,32 @@
     </section>
 
     <section class="component-section">
-      <h3>3. Remote Customer Lookup</h3>
+  <h3>3. External Lookup</h3>
 
-      <HlxSelect
-        v-model="remoteLookupId"
-        selection-type="lookup"
-        label="Remote Customer Lookup"
-        :options="remoteLookupOptions"
-        value-key="id"
-        display-key="name"
-        secondary-key="email"
-        :search-keys="['name', 'email', 'city']"
-        :loading="remoteLookupLoading"
-        loading-text="Searching remote records..."
-        :show-card="true"
-        :card-fields="customerCardFields"
-        :card-columns="2"
-        :status-options="statusOptions"
-        status-key="status"
-        @search="searchRemoteLookup"
-        @select="log('Remote lookup selected', $event)"
-      />
-    </section>
+  <HlxSelect
+    v-model="externalLookupId"
+    selection-type="lookup"
+    label="External Customer Lookup"
+    :options="customers_r"
+    value-key="customer.id"
+    display-key="customer.personal.name"
+    :secondary-key="[
+      'customer.contact.email',
+      'customer.address.city'
+    ]"
+    :search-keys="[
+      'customer.personal.name',
+      'customer.contact.email',
+      'customer.address.city'
+    ]"
+    :show-card="true"
+    :card-fields="nestedCustomerCardFields"
+    :card-columns="2"
+    :status-options="statusOptions"
+        status-key="customer.accounts.status"
+    @select="log('External lookup selected', $event)"
+  />
+</section>
 
     <section class="component-section">
       <h3>4. Searchable dropdown: local array</h3>
@@ -86,18 +90,19 @@
       <HlxSelect
         v-model="searchableDropdownId"
         selection-type="dropdown"
-        label="Search Local Customers"
+        label="External Customers search"
         :search-enabled="true"
-        :options="customers"
-        value-key="id"
-        display-key="name"
-        secondary-key="email"
-        :search-keys="['name']"
+        :options="customers_r"
+        :option-icon="user"
+        value-key="customer.id"
+        display-key="customer.personal.name"
+        :secondary-key="['customer.contact.email','customer.accounts.0.status']"
+        :search-keys="['customer.personal.name']"
         :show-card="true"
-        :card-fields="customerCardFields"
+        :card-fields="nestedCustomerCardFields"
         :card-columns="2"
         :status-options="statusOptions"
-        status-key="status"
+        status-key="customer.accounts.status"
         @select="log('Local searchable dropdown selected', $event)"
       />
     </section>
@@ -129,14 +134,13 @@
       <HlxSelect
         v-model="remoteDropdownId"
         selection-type="dropdown"
-        label="Remote Customer Dropdown"
+        label="Contacts Dropdown"
         :search-enabled="true"
-        :options="remoteDropdownOptions"
+        :options="contacts"
         value-key="id"
         display-key="name"
-        secondary-key="email"
+        :secondary-key="['email','phone','status']"
         :search-keys="['name', 'email', 'city']"
-        :loading="remoteDropdownLoading"
         :show-card="true"
         :card-fields="customerCardFields"
         :card-columns="2"
@@ -306,55 +310,6 @@
       />
     </section>
 
-    <section class="component-section">
-      <h3>11. Multiple dependencies: AND condition with flat fields</h3>
-
-      <p>Both organizationId and departmentId must match.</p>
-
-      <HlxSelect
-        v-model="andEmployeeId"
-        selection-type="lookup"
-        label="Employee — Organization AND Department"
-        :options="employees"
-        value-key="id"
-        display-key="name"
-        :dependencies="[
-          {
-            parentValue: selectedOrganizationId,
-            parentKey: 'organizationId'
-          },
-          {
-            parentValue: selectedDepartmentId,
-            parentKey: 'departmentId'
-          }
-        ]"
-        @select="log('AND employee selected', $event)"
-      />
-    </section>
-
-    <section class="component-section">
-      <h3>12. Multiple dependencies: AND condition with nested fields</h3>
-
-      <HlxSelect
-        v-model="nestedAndEmployeeId"
-        selection-type="lookup"
-        label="Nested Employee — Organization AND Department"
-        :options="nestedEmployees"
-        value-key="id"
-        display-key="name"
-        :dependencies="[
-          {
-            parentValue: selectedOrganizationId,
-            parentKey: 'organization.id'
-          },
-          {
-            parentValue: selectedDepartmentId,
-            parentKey: 'department.id'
-          }
-        ]"
-        @select="log('Nested AND employee selected', $event)"
-      />
-    </section>
 
     <section class="component-section">
       <h3>13. Field states and disabled options</h3>
@@ -417,7 +372,6 @@
         :card-error="cardDemoError"
         :status-options="statusOptions"
         status-key="status"
-        retry-text="Retry loading"
         @select="loadCardDetails"
         @retry="retryCardDetails"
       />
@@ -459,7 +413,8 @@
         :secondary-key="[
           'category',
           'rating',
-          'instructor.name'
+          'instructor.name',
+          'description'
         ]"
         :search-keys="['title', 'category', 'rating']"
         :show-card="true"
@@ -473,7 +428,7 @@
     </section>
 
     <section class="component-section">
-      <h3>16. Lookup: stale and unavailable selected record testing</h3>
+      <h3>16. Lookup:restore data</h3>
 
       <HlxSelect
         ref="staleSelectionLookup"
@@ -587,6 +542,9 @@ import HlxSelect from "./components/hlxselect.vue";
 import nestedCustomerData from "./data/nested-customers.json";
 import userIcon from "./assets/user.svg";
 import buildingIcon from "./assets/buildings_icon.svg";
+import contactsd from "./data/contacts.json"
+import customers_e from "./data/customers.json"
+import nested_d from "./data/nested-customers.json";
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -600,8 +558,8 @@ export default {
   data() {
     return {
      
-    selectedUserId: null,
-
+    selectedUserId: null,//17
+//form fields for adding the data
     createUserFields: [
       {
         key: "name",
@@ -662,21 +620,23 @@ export default {
         required: false
       }
     ],
-      user: userIcon,
-      building: buildingIcon,
+      user: userIcon,//2
+      building: buildingIcon,//1
 
-      lookupCustomerId: null,
-      multipleSecondaryId: null,
-      remoteLookupId: null,
-      searchableDropdownId: null,
-      normalDropdownId: null,
-      remoteDropdownId: null,
-      nestedLookupId: null,
-      nestedAccountLookupId: null,
+      lookupCustomerId: null,//1
+      multipleSecondaryId: null,//2
+      customers_r:customers_e.customers,//3
+      externalLookupId: null,//3
+      searchableDropdownId: null,//4
+      normalDropdownId: null,//5
+      contacts:contactsd.contacts,//6
+      remoteDropdownId:null,//6
+      nestedLookupId: null,//7
+      nestedAccountLookupId: null,//8
 
-      disabledCustomerId: 102,
-      readonlyCustomerId: 101,
-      disabledOptionCustomerId: null,
+      disabledCustomerId: 102,//
+      readonlyCustomerId: 101,//
+      disabledOptionCustomerId: null,//
 
       cardStateCustomerId: 103,
       cardDemoLoading: false,
@@ -697,8 +657,8 @@ export default {
       selectedCustomerId: null,
 
       staleSelectionCustomerId: 101,
-      customError: "Enter a valid data",
-
+      customError: "",
+      //16
       staleTestCustomers: [
         {
           id: 101,
@@ -728,9 +688,9 @@ export default {
           amount: 18000
         }
       ],
-
+      //16
       staleTestMessage: "Initial selection loaded",
-
+      //status
       statusOptions: [
         {
           name: "Active",
@@ -949,14 +909,14 @@ export default {
           locale: "en-CA"
         }
       ],
-
+      //3,4
       nestedCustomerCardFields: [
         { key: "customer.personal.name", label: "Customer Name" },
-        { key: "customer.personal.age", label: "Age" },
         { key: "customer.contact.email", label: "Email" },
         { key: "customer.contact.phone", label: "Phone" },
         { key: "customer.address.city", label: "City" },
-        { key: "customer.address.state", label: "State" }
+        { key: "customer.address.state", label: "State" },
+        {key:"customer.accounts.status",label:"Status",format:"status"}
       ],
 
       nestedAccountCardFields: [
@@ -1116,9 +1076,21 @@ export default {
         this.lookupLoadingMore = false;
       }
     },
-    handleSelect(record){
-      this.customError="";
-    },
+   methods: {
+  validateCustomer() {
+    if (!this.multipleSecondaryId) {
+      this.customError = "Please select a customer";
+      return false;
+    }
+
+    this.customError = "";
+    return true;
+  },
+
+  handleSelect(record) {
+    this.customError = "";
+  }
+},
     async searchRemoteLookup(searchText) {
       this.remoteLookupLoading = true;
 

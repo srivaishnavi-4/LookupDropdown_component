@@ -17,20 +17,14 @@
           "state": "Tamil Nadu",
           "country": "India"
         },
-        "accounts": [
+        "accounts": 
           {
             "accountId": "ACC101",
             "accountName": "Business Account",
             "status": "Active",
             "balance": 50000
-          },
-          {
-            "accountId": "ACC102",
-            "accountName": "Savings Account",
-            "status": "Inactive",
-            "balance": 25000
           }
-        ],
+        ,
         "services": [
           {
             "serviceName": "Web Development",
@@ -59,14 +53,14 @@
           "state": "Tamil Nadu",
           "country": "India"
         },
-        "accounts": [
+        "accounts": 
           {
             "accountId": "ACC103",
             "accountName": "Premium Account",
             "status": "Active",
             "balance": 80000
           }
-        ],
+        ,
         "services": [
           {
             "serviceName": "Mobile Development",
@@ -91,14 +85,14 @@
           "state": "Tamil Nadu",
           "country": "India"
         },
-        "accounts": [
+        "accounts": 
           {
             "accountId": "ACC104",
             "accountName": "Basic Account",
             "status": "Pending",
             "balance": 15000
           }
-        ],
+        ,
         "services": [
           {
             "serviceName": "UI Development",
