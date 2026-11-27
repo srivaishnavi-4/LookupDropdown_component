@@ -1,0 +1,13 @@
+@import "@fontsource-variable/open-sans";
+
+:root {
+  font-family: "Open Sans Variable", sans-serif;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}

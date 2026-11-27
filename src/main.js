@@ -1,6 +1,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import '@fontsource-variable/open-sans'
+import halleyxKit from 'halleyx-ui-framework'
+//load the styles
+import 'halleyx-ui-framework/dist/es/index.css';
 import './assets/main.css'
 
-createApp(App).mount('#app')
+createApp(App).use(halleyxKit).mount("#app");

@@ -30,21 +30,13 @@
         <span v-if="required" class="required">*</span>
       </label>
 
-    <!-- Search Icon -->
-<!-- Selection Field Icon -->
-<!-- Field Icon -->
-<component
-  v-if="typeof fieldIcon !== 'string' && fieldIcon"
-  :is="fieldIcon"
-  class="field-icon"
-/>
-
-<img
-  v-else-if="fieldIcon"
-  :src="getIconSource(fieldIcon)"
-  class="field-icon"
-  alt="Field Icon"
-/>
+   
+<!-- Search Icon -->
+<i
+v-if="searchEnabled"
+  class="icon-search-regular field-icon"
+  aria-hidden="true"
+></i>
 
       <!-- Input -->
       <input
@@ -67,30 +59,28 @@
         @keydown.esc="closeList"
       />
 
-      <!-- Clear Icon -->
-            <img
-        v-if="
-          selectedRecord &&
-          clearable &&
-          !isDisabled &&
-          !readonly &&
-          !(selectionType === 'dropdown' && !searchEnabled)
-        "
-        :src="closeIcon"
-        class="action-icon clear-icon"
-        alt="Clear"
-        @click.stop="clearSelection"
-      />
+            <!-- Clear Icon -->
+<i
+  v-if="
+    selectedRecord &&
+    clearable &&
+    !isDisabled &&
+    !readonly &&
+    !(selectionType === 'dropdown' && !searchEnabled)
+  "
+  class="icon-times-circle-regular action-icon clear-icon"
+  aria-hidden="true"
+  @click.stop="clearSelection"
+></i>
 
       <!-- Dropdown Icon -->
-      <img
-        v-if="selectionType === 'dropdown'"
-        :src="dropdownIcon"
-        :class="{ rotated: isOpen }"
-        class="action-icon dropdown-arrow"
-        alt="Dropdown"
-        @click.stop="toggleList"
-      />
+<i
+  v-if="selectionType === 'dropdown'"
+  :class="{ rotated: isOpen }"
+  class="icon-angle-down-filled action-icon dropdown-arrow"
+  aria-hidden="true"
+  @click.stop="toggleList"
+></i>
 
     </div>
 
@@ -111,8 +101,7 @@
     )
   "
   class="options-container"
-  :class="{ 'options-above': isOpenAbove }"
-  :style="{ maxHeight: `${dropdownMaxHeight}px` }"
+  :style="dropdownStyle"
 >
 
       <!-- Loading -->
@@ -130,18 +119,10 @@
         v-else-if="apiError && filteredOptions.length === 0"
         class="options-error-state"
       >
-        <svg
-          width="27"
-          height="26"
-          viewBox="0 0 27 26"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M21.7942 25.6253H5.06542C4.19146 25.6265 3.33211 25.4012 2.57112 24.9714C1.81013 24.5417 1.17346 23.9221 0.72316 23.173C0.272863 22.424 0.0242987 21.5711 0.00169289 20.6974C-0.0209129 19.8238 0.183211 18.9591 0.59417 18.1878L8.85292 2.74033C9.29641 1.91227 9.95627 1.22005 10.7622 0.737464C11.5681 0.254876 12.4898 0 13.4292 0C14.3685 0 15.2903 0.254876 16.0962 0.737464C16.9021 1.22005 17.5619 1.91227 18.0054 2.74033L26.2642 18.1878C26.6761 18.9591 26.881 19.8239 26.8589 20.698C26.8368 21.5721 26.5885 22.4255 26.1382 23.175C25.6879 23.9244 25.051 24.5444 24.2897 24.9743C23.5283 25.4042 22.6685 25.6294 21.7942 25.6278V25.6253ZM13.4292 1.87533C12.828 1.86982 12.237 2.03028 11.7211 2.33904C11.2053 2.6478 10.7846 3.09289 10.5054 3.62533L2.24792 19.0691C1.98865 19.5547 1.85981 20.0993 1.87396 20.6497C1.88812 21.2 2.0448 21.7373 2.32869 22.209C2.61258 22.6807 3.01398 23.0706 3.49366 23.3408C3.97334 23.611 4.51489 23.7521 5.06542 23.7503H21.7942C22.3446 23.7518 22.886 23.6106 23.3655 23.3403C23.845 23.0701 24.2462 22.6801 24.53 22.2084C24.8137 21.7368 24.9703 21.1996 24.9844 20.6494C24.9985 20.0991 24.8696 19.5546 24.6104 19.0691L16.3529 3.62408C16.0736 3.09187 15.6528 2.64704 15.137 2.3385C14.6212 2.02997 14.0302 1.8697 13.4292 1.87533ZM14.3667 14.6878V9.68783C14.3667 9.43919 14.2679 9.20073 14.0921 9.02492C13.9163 8.8491 13.6778 8.75033 13.4292 8.75033C13.1805 8.75033 12.9421 8.8491 12.7663 9.02492C12.5904 9.20073 12.4917 9.43919 12.4917 9.68783V14.6878C12.4917 14.9365 12.5904 15.1749 12.7663 15.3507C12.9421 15.5266 13.1805 15.6253 13.4292 15.6253C13.6778 15.6253 13.9163 15.5266 14.0921 15.3507C14.2679 15.5266 14.3667 15.7649 14.3667 15.5133V14.6878ZM14.7042 18.4378C14.7042 18.1063 14.5725 17.7884 14.3381 17.5539C14.1036 17.3195 13.7857 17.1878 13.4542 17.1878H13.4417C13.195 17.1903 12.9546 17.2657 12.7506 17.4045C12.5467 17.5434 12.3885 17.7395 12.2958 17.9681C12.2031 18.1967 12.1801 18.4476 12.2297 18.6893C12.2794 18.9309 12.3994 19.1525 12.5747 19.326C12.75 19.4996 12.9727 19.6174 13.2149 19.6646C13.457 19.7119 13.7077 19.6864 13.9354 19.5914C14.163 19.4965 14.3575 19.3363 14.4943 19.131C14.6311 18.9257 14.7042 18.6845 14.7042 18.4378Z"
-            fill="#FF5050"
-          />
-        </svg>
+        <i
+  class="icon-triangle-exclamation-regular error-icon"
+  aria-hidden="true"
+></i>
 
         <h3>Unable to load records</h3>
 
@@ -153,20 +134,12 @@
           @mousedown.prevent
           @click="retryApiOptions"
         >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 13 13"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12.9573 7.22054C12.8087 8.56036 12.2469 9.82075 11.3498 10.8269C10.4527 11.8331 9.26477 12.5353 7.95071 12.836C6.63665 13.1368 5.26157 13.0212 4.01613 12.5054C2.77068 11.9896 1.71659 11.099 1 9.95721V11.8332C1 11.9658 0.947322 12.093 0.853553 12.1868C0.759785 12.2805 0.632608 12.3332 0.5 12.3332C0.367392 12.3332 0.240215 12.2805 0.146447 12.1868C0.0526784 12.093 0 11.9656 0 11.8332V8.49988C0 8.36727 0.0526784 8.24009 0.146447 8.14632C0.240215 8.05256 0.367392 7.99988 0.5 7.99988H3.83333C3.96594 7.99988 4.09312 8.05256 4.18689 8.14632C4.28065 8.24009 4.33333 8.63249 4.33333 8.49988C4.33333 8.63249 4.28065 8.75966 4.18689 8.85343C4.09312 8.9472 3.96594 8.99988 3.83333 8.99988H1.61333C2.14851 10.0546 3.01001 10.9084 4.06959 11.434C5.12917 11.9596 6.33016 12.1289 7.49375 11.9168C8.65735 11.7047 9.72134 11.1224 10.5273 10.2568C11.3333 9.39112 11.8383 8.28831 11.9667 7.11254C11.9727 7.04643 11.9918 6.98217 12.023 6.92353C12.0541 6.86489 12.0966 6.81303 12.1479 6.77099C12.1993 6.72894 12.2586 6.69755 12.3222 6.67864C12.3858 6.65973 12.4526 6.65369 12.5186 6.66086C12.5846 6.66803 12.6485 6.68827 12.7066 6.72041C12.7647 6.75254 12.8158 6.79593 12.857 6.84803C12.8981 6.90012 12.9285 6.9599 12.9463 7.02385C12.9641 7.08781 12.969 7.15468 12.9607 7.22054H12.9573ZM12.5 0.666544C12.3674 0.666544 12.2402 0.719222 12.1464 0.81299C12.0527 0.906758 12 1.03394 12 1.16654V3.04254C11.2834 1.90074 10.2293 1.01019 8.98387 0.494354C7.73843 -0.0214799 6.36335 -0.137033 5.04929 0.163715C3.73523 0.464464 2.54729 1.16661 1.6502 2.17281C0.753099 3.179 0.191291 4.43939 0.0426666 5.77921C0.0355407 5.84453 0.0413587 5.91061 0.0597865 5.97367C0.0782147 6.03674 0.108892 6.09556 0.150066 6.14676C0.191239 6.19796 0.2421 6.24055 0.299742 6.27209C0.357384 6.30362 0.420676 6.32348 0.486 6.33054C0.504208 6.33156 0.522459 6.33054 0.540667 6.33054C0.66374 6.33028 0.782391 6.28463 0.873908 6.20234C0.965424 6.12005 1.02338 6.0069 1.03667 5.88454C1.16674 4.71007 1.67228 3.60892 2.47816 2.74471C3.28404 1.88051 4.3473 1.29938 5.50978 1.08769C6.67213 0.875999 7.87213 1.04505 8.93091 1.56971H9.16667C9.03406 3.99988 8.66667 3.99988 8.66667 4.49988C8.66667 4.63248 8.90688 4.05256 8.81311 4.14632C8.71935 4.24009 12.8536 0.81299 12.8536 0.81299L13 4.49988V1.16654C13 1.03394 12.9473 0.906758 12.8536 0.81299C12.7598 0.719222 12.6326 0.666544 12.5 0.666544Z"
-              fill="#54BD95"
-            />
-          </svg>
+          <i
+  class="icon-rotate-regular"
+  aria-hidden="true"
+></i>
 
-          <span>{{ retryText }}</span>
+          <span>Retry</span>
         </button>
       </div>
 
@@ -229,19 +202,12 @@
           }"
           @mousedown.prevent="selectRecord(record)"
         >
-         <!-- Option Icon -->
-<component
-  v-if="typeof optionIcon !== 'string' && optionIcon"
-  :is="optionIcon"
-  class="option-icon"
-/>
-
-<img
-  v-else-if="optionIcon"
-  :src="getIconSource(optionIcon)"
-  class="option-icon"
-  alt="Option Icon"
-/>
+      <!-- Option Icon -->
+<i
+  v-if="optionIcon"
+  :class="['option-icon', optionIcon]"
+  aria-hidden="true"
+></i>
 
           <div class="option-content">
 
@@ -306,8 +272,8 @@
                     fieldIndex <
                     visibleSecondaryFields(record).length - 1
                   "
-                  width="2"
-                  height="2"
+                  width="4"
+                  height="4"
                   viewBox="0 0 2 2"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -382,18 +348,10 @@
       <!-- Error State -->
       <div v-else-if="cardError" class="card-error-state">
 
-        <svg
-          width="40"
-          height="40"
-          viewBox="0 0 27 26"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M21.7942 25.6253H5.06542C4.19146 25.6265 3.33211 25.4012 2.57112 24.9714C1.81013 24.5417 1.17346 23.9221 0.72316 23.173C0.272863 22.424 0.0242987 21.5711 0.00169289 20.6974C-0.0209129 19.8238 0.183211 18.9591 0.59417 18.1878L8.85292 2.74033C9.29641 1.91227 9.95627 1.22005 10.7622 0.737464C11.5681 0.254876 12.4898 0 13.4292 0C14.3685 0 15.2903 0.254876 16.0962 0.737464C16.9021 1.22005 17.5619 1.91227 18.0054 2.74033L26.2642 18.1878C26.6761 18.9591 26.881 19.8239 26.8589 20.698C26.8368 21.5721 26.5885 22.4255 26.1382 23.175C25.6879 23.9244 25.051 24.5444 24.2897 24.9743C23.5283 25.4042 22.6685 25.6294 21.7942 25.6278V25.6253ZM13.4292 1.87533C12.828 1.86982 12.237 2.03028 11.7211 2.33904C11.2053 2.6478 10.7846 3.09289 10.5054 3.62533L2.24792 19.0691C1.98865 19.5547 1.85981 20.0993 1.87396 20.6497C1.88812 21.2 2.0448 21.7373 2.32869 22.209C2.61258 22.6807 3.01398 23.0706 3.49366 23.3408C3.97334 23.611 4.51489 23.7521 5.06542 23.7503H21.7942C22.3446 23.7518 22.886 23.6106 23.3655 23.3403C23.845 23.0701 24.2462 22.6801 24.53 22.2084C24.8137 21.7368 24.9703 21.1996 24.9844 20.6494C24.9985 20.0991 24.8696 19.5546 24.6104 19.0691L16.3529 3.62408C16.0736 3.09187 15.6528 2.64704 15.137 2.3385C14.6212 2.02997 14.0302 1.8697 13.4292 1.87533ZM14.3667 14.6878V9.68783C14.3667 9.43919 14.2679 9.20073 14.0921 9.02492C13.9163 8.8491 13.6778 8.75033 13.4292 8.75033C13.1805 8.75033 12.9421 8.8491 12.7663 9.02492C12.5904 9.20073 12.4917 9.43919 12.4917 9.68783V14.6878C12.4917 14.9365 12.5904 15.1749 12.7663 15.3507C12.9421 15.5266 13.1805 15.6253 13.4292 15.6253C13.6778 15.6253 13.9163 15.5266 14.0921 15.3507C14.2679 15.1749 14.3667 14.9365 14.3667 14.6878ZM14.7042 18.4378C14.7042 18.1063 14.5725 17.7884 14.3381 17.5539C14.1036 17.3195 13.7857 17.1878 13.4542 17.1878H13.4417C13.195 17.1903 12.9546 17.2657 12.7506 17.4045C12.5467 17.5434 12.3885 17.7395 12.2958 17.9681C12.2031 18.1967 12.1801 18.4476 12.2297 18.6893C12.2794 18.9309 12.3994 19.1525 12.5747 19.326C12.75 19.4996 12.9727 19.6174 13.2149 19.6646C13.457 19.7119 13.7077 19.6864 13.9354 19.5914C14.163 19.4965 14.3575 19.3363 14.4943 19.131C14.6311 18.9257 14.7042 18.6845 14.7042 18.4378Z"
-            fill="#FF5050"
-          />
-        </svg>
+        <i
+  class="icon-triangle-exclamation-regular error-icon"
+  aria-hidden="true"
+></i>
 
         <h3>Unable to load data</h3>
 
@@ -404,42 +362,12 @@
           class="card-retry-button"
           @click="$emit('retry', selectedRecord)"
         >
-          <svg
-  width="17"
-  height="17"
-  viewBox="0 0 24 24"
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
->
-  <path
-    d="M20 7V3M20 7H16"
-    stroke="#4FBD9B"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-  <path
-    d="M20 7C18.5 4.5 15.8 3 12.8 3C8 3 4 7 4 12"
-    stroke="#4FBD9B"
-    stroke-width="2"
-    stroke-linecap="round"
-  />
-  <path
-    d="M4 17V21M4 17H8"
-    stroke="#4FBD9B"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-  <path
-    d="M4 17C5.5 19.5 8.2 21 11.2 21C16 21 20 17 20 12"
-    stroke="#4FBD9B"
-    stroke-width="2"
-    stroke-linecap="round"
-  />
-</svg>
+          <i
+  class="icon-rotate-regular"
+  aria-hidden="true"
+></i>
 
-          <span>{{ retryText }}</span>
+          <span>Retry</span>
         </button>
 
       </div>
@@ -459,7 +387,6 @@
 
           <label>{{ field.label }}</label>
 
-          <!-- Status -->
           
 <!-- Status -->
 <span
@@ -690,10 +617,7 @@
 </template>
 
 <script>
-import searchIcon from "../assets/search.svg";
-import dropdownIcon from "../assets/dropdown.svg";
-import closeIcon from "../assets/close.svg";
-import userIcon from "../assets/user.svg";
+
 
 export default {
   name: "hlxselect",
@@ -744,15 +668,16 @@ export default {
       default: ""
     },
 
-    optionIcon: {
-      type: [String,Object,Function],
-      default: ""
-    },
+    // Icons
+optionIcon: {
+  type: String,
+  default: ""
+},
 
-    optionIconKey: {
-      type: String,
-      default: ""
-    },
+optionIconKey: {
+  type: String,
+  default: ""
+},
     // Create Record
 createEnabled: {
   type: Boolean,
@@ -1015,22 +940,23 @@ createResponseKey: {
 
   data() {
     return {
-      searchIcon,
-      dropdownIcon,
-      closeIcon,
-      userIcon,
 
-isOpenAbove: false,
-dropdownMaxHeight: 220,
-      isFocused: false,
-      isOpenAbove:false,
-      searchText: "",
+isOpen: false,
+    dropdownStyle: {
+      top: "0px",
+      left: "0px",
+      width: "100%",
+      maxHeight: "220px"
+    },
 
-      selectedRecord: null,
+    isFocused: false,
+    searchText: "",
 
-      highlightedIndex: -1,
-      localVisibleCount: 0,
-      showError: false,
+    selectedRecord: null,
+
+    highlightedIndex: -1,
+    localVisibleCount: 0,
+    showError: false,
 
       blurTimer: null,
       apiOptions: [],
@@ -1319,6 +1245,30 @@ createFocusedField: ""
 
   watch: {
 
+    searchText() {
+      if (this.isOpen) {
+        this.updateDropdownPosition();
+      }
+    },
+
+    visibleOptions() {
+      if (this.isOpen) {
+        this.updateDropdownPosition();
+      }
+    },
+
+    isLoading() {
+      if (this.isOpen) {
+        this.updateDropdownPosition();
+      }
+    },
+
+    apiError() {
+      if (this.isOpen) {
+        this.updateDropdownPosition();
+      }
+    },
+
     modelValue: {
       immediate: true,
 
@@ -1510,21 +1460,7 @@ createFocusedField: ""
 },
 
   methods: {
-    // Resolve Icon Name to SVG
-  getIconSource(icon) {
-  if (!icon) {
-    return "";
-  }
 
-  const icons = {
-    search: this.searchIcon,
-    dropdown: this.dropdownIcon,
-    close: this.closeIcon,
-    user: this.userIcon
-  };
-
-  return icons[icon] || icon;
-},
       getNestedValue(data, path) {
   if (!data || !path) {
     return undefined;
@@ -1538,26 +1474,6 @@ createFocusedField: ""
     return current[key];
   }, data);
 },
-
-updateDropdownPosition() {
-  if (!this.isOpen) return;
-
-  const input = this.$el.querySelector(".selection-field");
-  const options = this.$el.querySelector(".options-container");
-
-  if (!input || !options) return;
-
-  const inputRect = input.getBoundingClientRect();
-
-  const spaceBelow = window.innerHeight - inputRect.bottom;
-  const spaceAbove = inputRect.top;
-
-  const optionsHeight = Math.min(options.scrollHeight, 220);
-
-  this.isOpenAbove =
-    spaceBelow < optionsHeight && spaceAbove > spaceBelow;
-},
-
 
     // Nested Property
     getFieldValue(record, path) {
@@ -1893,7 +1809,7 @@ getStatusOption(value) {
 getStatusLabel(value) {
   const status = this.getStatusOption(value);
 
-  if (status && typeof status === "object") {
+  if (status) {
     return (
       status.name ??
       status.label ??
@@ -1903,7 +1819,9 @@ getStatusLabel(value) {
     );
   }
 
-  return String(value ?? "");
+  return typeof value === "object"
+    ? ""
+    : String(value ?? "");
 },
 
 getStatusStyle(value) {
@@ -1918,44 +1836,6 @@ getStatusStyle(value) {
             "#999999"
           )
         : "#999999"
-  };
-},
-getStatusLabel(value) {
-  const status = this.getStatusOption(value);
-
-  if (status) {
-    return (
-      status.name ??
-      status.label ??
-      status[this.statusValueKey] ??
-      status.value ??
-      ""
-    );
-  }
-
-  return typeof value === "object"
-    ? ""
-    : String(value ?? "");
-},
-
-
-getStatusLabel(value) {
-  const status = this.getStatusOption(value);
-
-  if (status) {
-    return status.name || status.label || status.value || "";
-  }
-
-  return typeof value === "object"
-    ? ""
-    : String(value ?? "");
-},
-
-getStatusStyle(value) {
-  const status = this.getStatusOption(value);
-
-  return {
-    backgroundColor: status?.color || "#999999"
   };
 },
 
@@ -2028,7 +1908,7 @@ getStatusStyle(value) {
       });
 
       if (this.required) {
-        this.validateSelection();
+        this.validate();
       }
     },
 
@@ -2111,20 +1991,62 @@ getStatusStyle(value) {
 
     },
     updateDropdownPosition() {
-  this.$nextTick(() => {
-    const input = this.$el.querySelector(".selection-field");
+      this.$nextTick(() => {
+        if (!this.isOpen) {
+          return;
+        }
 
-    if (!input) return;
+        const field = this.$el.querySelector(".selection-field");
 
-    const rect = input.getBoundingClientRect();
+        if (!field) {
+          return;
+        }
 
-    const spaceBelow = window.innerHeight - rect.bottom;
-    const spaceAbove = rect.top;
+        const rect = field.getBoundingClientRect();
+        const dropdown = this.$el.querySelector(".options-container");
+        const maxDropdownHeight = 220;
+        const viewportPadding = 8;
+        const gap = 4;
+        const spaceAbove = Math.max(
+          0,
+          rect.top - gap - viewportPadding
+        );
+        const spaceBelow = Math.max(
+          0,
+          window.innerHeight - rect.bottom - gap - viewportPadding
+        );
+        const contentHeight = dropdown
+          ? Math.min(dropdown.scrollHeight, maxDropdownHeight)
+          : maxDropdownHeight;
+        const fitsBelow = spaceBelow >= contentHeight;
+        const fitsAbove = spaceAbove >= contentHeight;
+        const openAbove =
+          !fitsBelow && (fitsAbove || spaceAbove > spaceBelow);
+        const availableHeight = openAbove ? spaceAbove : spaceBelow;
+        const maxHeight = Math.min(maxDropdownHeight, availableHeight);
+        const dropdownHeight = dropdown
+          ? Math.min(contentHeight, maxHeight)
+          : maxHeight;
+        const width = Math.min(
+          rect.width,
+          window.innerWidth - viewportPadding * 2
+        );
+        const left = Math.min(
+          Math.max(viewportPadding, rect.left),
+          window.innerWidth - viewportPadding - width
+        );
+        const top = openAbove
+          ? rect.top - gap - dropdownHeight
+          : rect.bottom + gap;
 
-    this.isOpenAbove =
-      spaceBelow < 220 && spaceAbove > spaceBelow;
-  });
-},
+        this.dropdownStyle = {
+          top: `${top}px`,
+          left: `${left}px`,
+          width: `${width}px`,
+          maxHeight: `${maxHeight}px`
+        };
+      });
+    },
 
     moveUp() {
 
@@ -2172,16 +2094,13 @@ getStatusStyle(value) {
     },
 
     // Select Highlighted Record
-    selectHighlighted() {
+   selectHighlighted() {
+  const record = this.visibleOptions[this.highlightedIndex];
 
-      const record =
-        this.filteredOptions[this.highlightedIndex];
-
-      if (record && !this.isOptionDisabled(record)) {
-        this.selectRecord(record);
-      }
-
-    },
+  if (record && !this.isOptionDisabled(record)) {
+    this.selectRecord(record);
+  }
+},
 
     // UNIVERSAL FIELD FORMATTING
     formatFieldValue(value, field = {}) {
@@ -2893,9 +2812,13 @@ async submitCreateForm() {
   position: relative;
   width: 100%;
   max-width: 600px;
-  font-family: "Open Sans Variable";
-}
+  font-family: "Open Sans Variable", sans-serif;
 
+}
+.hlx-select,
+.hlx-select *:not([class*="icon-"]) {
+  font-family: inherit !important;   /* or: 'Inter', system-ui, sans-serif */
+}
 /* Selection Field */
 
 .selection-field {
@@ -3002,48 +2925,63 @@ async submitCreateForm() {
   color: #a6a6a6;
 }
 /* Icons */
+/* Icons */
 .field-icon {
-  width: 18px;
-  height: 18px;
+  font-size: 18px;
+  line-height: 1;
   margin-right: 8px;
   flex-shrink: 0;
-  color:#A6A6A6;
+  color: #A6A6A6;
 }
+
 .action-icon {
-  width: 14px;
-  height: 14px;
+  font-size: 14px;
+  line-height: 1;
   cursor: pointer;
   flex-shrink: 0;
-  color:rgb(86,85,83);
+  color: rgb(86, 85, 83);
   margin-left: 6px;
 }
+
 .dropdown-arrow {
   transition: transform 0.2s ease;
+  font-size: 14px;
 }
+
 .dropdown-arrow.rotated {
   transform: rotate(180deg);
 }
+
+.option-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+  width: 18px;
+  min-width: 18px;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
 /* Options Container */
 .options-container {
-  position: absolute;
-  top: 45px;
+  position: fixed;
+  top: 0;
   left: 0;
-  right: 0;
+  right: auto;
   z-index: 100;
+
+  width: 100%;
   max-height: 220px;
   overflow-y: auto;
+  box-sizing: border-box;
+
   background: white;
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
-  box-shadow: 0px 8px 25px -4px rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.4);
 }
 
-/* Open options above the input */
-.options-container.options-above {
-  top: auto;
-  bottom: 45px;
-  border-radius: 6px;
-}
 /* Option */
 .option-item {
   display: flex;
@@ -3076,12 +3014,8 @@ async submitCreateForm() {
   min-width: 0;
 }
 
-.option-icon {
-  width: 30px;
-  height: 30px;
-  align-items: center;
-  object-fit: contain;
-  flex-shrink: 0;
+.option-icon{
+  font-size: 30px;
 }
 
 .option-title {
@@ -3092,7 +3026,7 @@ async submitCreateForm() {
 
 .option-subtitle {
   margin-top: 4px;
-  color: #777;
+  color: #8d8d8d;
   font-size: 10px;
 }
 
@@ -3101,6 +3035,7 @@ async submitCreateForm() {
   align-items: center;
   gap: 5px;
 }
+
 
 
 .option-item.selected .option-title,
@@ -3113,7 +3048,10 @@ async submitCreateForm() {
 }
 
 .option-item:hover .option-subtitle {
-  color: #777;
+  color: #8d8d8d;
+}
+.option-icon:hover .option-icon{
+  color:black !important;
 }
 
 /* Status */
@@ -3377,7 +3315,13 @@ async submitCreateForm() {
 }
 
 .error-icon {
+  font-size: 27px;
+  line-height: 1;
+  color: #FF5050;
   margin-bottom: 16px;
+}
+.card-error-state .error-icon {
+  font-size: 40px;
 }
 
 .card-error-state h3 {
